@@ -1,14 +1,12 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-// const cookieParser = require("cookie-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const password = "purple-monkey-dinosaur"; // found in the req.params object
 const hashedPassword = bcrypt.hashSync(password, 10);
-// const getUserByEmail = require("./helpers.js");
+const getUserByEmail = require("./helpers.js");
 app.use(bodyParser.urlencoded({extended: true}));
-// app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ["key1", "key2"],
@@ -23,19 +21,6 @@ const generateRandomString = function() {
   const rand = Math.random().toString(16).substr(2, 6);
   return rand;
 };
-
-const getUserByEmail = function(email, database) {
-  // lookup magic...
-  let user = {};
-  const userList = Object.keys(database);
-  for (let i = 0; i < userList.length; i++) {
-    if (users[userList[i]].email === email) {
-      user = users[userList[i]];
-    }
-  }
-  return user;
-};
-
 
 // Helper function
 const urlsForUser = function(id) {
@@ -209,5 +194,3 @@ const users = {
     password: bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
-
-module.exports = users;
