@@ -83,7 +83,12 @@ app.get("/urls", (req, res) => {
 // Show URLs
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user_id: req.session.user_id };
-  res.render("urls_show", templateVars);
+  if (templateVars.user_id !== undefined && templateVars.user_id.id === urlDatabase[req.params.shortURL].userID) {
+    res.render("urls_show", templateVars);
+  }
+  else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -145,7 +150,7 @@ app.post("/login", (req, res) => {
     res.redirect("/urls");
   }
   else {
-    res.status(403);
+    res.status(403).send("403: Incorrect email or password");
   }
 });
 
@@ -166,10 +171,10 @@ app.post("/register", (req, res) => {
     password: password
   }
   if (email === "" || password === "") {
-    res.status(400);
+    res.status(400).send("400: Email or password cannot be blank");
   }
   else if (getUserByEmail(email, users).email === user.email) {
-    res.status(400);
+    res.status(400).send("400: User is already registered");
   }
   else {
     users[id] = user;
