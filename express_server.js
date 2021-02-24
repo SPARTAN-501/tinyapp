@@ -40,7 +40,7 @@ const urlDatabase = {
 };
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect("/login");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -141,6 +141,9 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const user = getUserByEmail(email, users);
+  if (!user.password || !user.email) {
+    res.status(403).send("403: User does not exist");
+  }
   if (bcrypt.compareSync(password, user.password) === true) {
     req.session.user_id = user;
     const templateVars = {
